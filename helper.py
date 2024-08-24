@@ -152,6 +152,26 @@ def activity_heatmap(selected_user,df):
     return user_heatmap
 
 
+# check validation of whatsapp file or not
+
+def is_valid_whatsapp_file(file_content):
+    # Split the content into lines
+    lines = file_content.splitlines()
+
+    # Check the first few lines for WhatsApp-like patterns
+    # Typically, WhatsApp messages start with a timestamp
+    # e.g., "12/31/21, 9:12 PM - John Doe: Message text"
+    if len(lines) > 0:
+        first_line = lines[0]
+        # Example format for WhatsApp exported files
+        # It starts with a date, followed by a comma, time, and a hyphen
+        if (first_line[:2].isdigit() and
+            first_line[2] == '/' and
+            first_line[5] == '/' and
+            '-' in first_line and
+            ':' in first_line):
+            return True
+    return False
 
 
 
