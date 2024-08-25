@@ -2,25 +2,50 @@ import re
 import pandas as pd
 
 def preprocess(data):
-    pattern = r'\d{1,2}/\d{1,2}/\d{2},\s\d{1,2}:\d{2}\s?\u202f?[apm]{2}\s-\s' #expression of data
+    line1 = data.splitlines()[0]
+
+    def time_format(line1):
+        # First, check if there's a comma to split on
+        if ',' in line1:
+            # Extract the time part from the string
+            time_part = line1.split(",")[1].strip().split(" ")[0]
+
+            # Check for the presence of "am" or "pm" (with or without a preceding space)
+            if "am" in line1.lower() or "pm" in line1.lower():
+                return 0  # 12 hr format
+            else:
+                return 1  # 24 hr format
+        else:
+            # If there's no comma, handle the case appropriately
+            return None  # or any default value or raise an exception
+
+    if(time_format(line1) == 1):
+        pattern = '\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s-\s'
+    else:
+        pattern = r'\d{1,2}/\d{1,2}/\d{2},\s\d{1,2}:\d{2}\s?\u202f?[apm]{2}\s-\s' #expression of data
     messages = re.split(pattern, data)[1:]
     date = re.findall(pattern, data)
     date = [date.replace('\u202f', ' ') for date in date]
-    from datetime import datetime
-    # Convert to 24-hour format
-    dates = []
-    for timestamp in date:
-        # Remove the trailing '- ' part for conversion
-        date_str = timestamp.rstrip(' - ')
 
-        # Convert to datetime object
-        date_obj = datetime.strptime(date_str, '%d/%m/%y, %I:%M %p')
+    if(time_format(line1) == 1):
+        messages = re.split(pattern, data)[1:]
+        dates = re.findall(pattern, data)
+    else:
+        from datetime import datetime
+        # Convert to 24-hour format
+        dates = []
+        for timestamp in date:
+            # Remove the trailing '- ' part for conversion
+            date_str = timestamp.rstrip(' - ')
 
-        # Convert back to string in 24-hour format
-        converted_timestamp = date_obj.strftime('%d/%m/%y, %H:%M - ')
+            # Convert to datetime object
+            date_obj = datetime.strptime(date_str, '%d/%m/%y, %I:%M %p')
 
-        # Add to the list of dates
-        dates.append(converted_timestamp)
+            # Convert back to string in 24-hour format
+            converted_timestamp = date_obj.strftime('%d/%m/%y, %H:%M - ')
+
+            # Add to the list of dates
+            dates.append(converted_timestamp)
 
     df = pd.DataFrame({'user_message': messages, 'message_date': dates})
 
