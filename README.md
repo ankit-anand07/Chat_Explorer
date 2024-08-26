@@ -1,6 +1,6 @@
 Chat_Explorer
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-OVEERVIEW:-
+OVERVIEW:-
 this project is a Python-based tool designed to extract and analyze data from WhatsApp chat exports. 
 It provides insights such as the most active users, peak messaging times, frequently used words, Timelines,and more.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
