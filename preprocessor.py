@@ -1,6 +1,9 @@
 import re
 import pandas as pd
 
+from helper import analyze_sentiment
+
+
 def preprocess(data):
     line1 = data.splitlines()[0]
 
@@ -90,5 +93,7 @@ def preprocess(data):
             period.append(str(hour) + "-" + str(hour + 1))
 
     df['period'] = period
+
+    df['polarity'], df['subjectivity'] = zip(*df['message'].apply(analyze_sentiment))
 
     return df

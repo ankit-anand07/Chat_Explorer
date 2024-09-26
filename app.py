@@ -1,8 +1,9 @@
-import streamlit as st
-import preprocessor,helper
 import matplotlib.pyplot as plt
 import seaborn as sns
-import cascading
+import streamlit as st
+import helper
+import preprocessor
+
 st.sidebar.markdown('<h1 class="sidebar-title">Text Explorer Pro</h1>', unsafe_allow_html=True)
 
 uploaded_file = st.sidebar.file_uploader("Choose a WhatsApp export .txt file", type=["txt"])  # Restrict file types to .txt
@@ -162,6 +163,24 @@ if uploaded_file is not None:
                     fig,ax = plt.subplots()
                     ax.pie(emoji_df[1].head(),labels=emoji_df[0].head(),autopct="%0.2f")
                     st.pyplot(fig)
+
+                # Sentiment Analysis
+                st.markdown("""
+                <h1 style="font-size: 2.5rem; font-weight: bold; color: #4CAF50; text-align: center;"> Sentiment Analysis </h1>
+                """, unsafe_allow_html=True)
+
+                # Show average polarity and subjectivity
+                avg_polarity = df['polarity'].mean()
+                avg_subjectivity = df['subjectivity'].mean()
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric(label="Average Polarity", value=round(avg_polarity, 2), delta=None,
+                              help="Range from -1 (negative) to 1 (positive)")
+                with col2:
+                    st.metric(label="Average Subjectivity", value=round(avg_subjectivity, 2), delta=None,
+                              help="Range from 0 (objective) to 1 (subjective)")
+
 
         else:
             st.error("The uploaded file is not a valid WhatsApp export file. Please upload the correct file.") #added

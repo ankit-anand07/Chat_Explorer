@@ -1,3 +1,4 @@
+from textblob import TextBlob
 from urlextract import URLExtract
 import pandas as pd
 from collections import Counter
@@ -173,7 +174,10 @@ def is_valid_whatsapp_file(file_content):
             return True
     return False
 
-
+def analyze_sentiment(message):
+    """Analyze sentiment of a message and return polarity and subjectivity."""
+    analysis = TextBlob(message)
+    return analysis.sentiment.polarity, analysis.sentiment.subjectivity
 
 
 
